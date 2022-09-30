@@ -1,5 +1,8 @@
-﻿using System;
+﻿using NeoStackTask.Models;
+using NeoStackTask.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +26,14 @@ namespace NeoStackTask
         public MainWindow()
         {
             InitializeComponent();
+            MainWindowViewModel viewModel = new MainWindowViewModel();
+            DataContext = viewModel;
+
+            listBox.SelectionChanged += viewModel.ListBoxSelectionChanged;
+            textBoxA.TextChanged += viewModel.TextBoxChanged;
+            textBoxB.TextChanged += viewModel.TextBoxChanged;
+            comboBoxC.SelectionChanged += viewModel.ListBoxSelectionChanged;
         }
+
     }
 }

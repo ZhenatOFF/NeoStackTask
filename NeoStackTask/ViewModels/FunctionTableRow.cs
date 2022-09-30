@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace NeoStackTask.ViewModels
 {
+    /// <summary>
+    /// Класс, описывающий строку в таблице значений функции
+    /// </summary>
     public class FunctionTableRow:BaseViewModel
     {
         private double _x;

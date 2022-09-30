@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NeoStackTask.Models
 {
+    /// <summary>
+    /// Модель функции
+    /// </summary>
     public class FunctionModel
     {
         /// <summary>Имя Функции</summary>
@@ -13,10 +16,10 @@ namespace NeoStackTask.Models
         public Func<double,double,double> Function { get; set; }
 
         /// <summary>Коэффициент A</summary>
-        public double A { get; set; }
+        public static double A { get; set; }
 
         /// <summary>Коэффициент B</summary>
-        public double B { get; set; }
+        public static double B { get; set; }
 
         /// <summary>Коэффициент C</summary>
         public double C { get; set; }
@@ -39,6 +42,12 @@ namespace NeoStackTask.Models
         private double Calculate(double x, double y)
         {
             return _function(A, B, C, x, y);
+        }
+
+        public override string ToString()
+        {
+            return this.Name;
+
         }
     }
 }

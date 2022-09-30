@@ -18,7 +18,10 @@ namespace UnitTests
             FunctionModel model = new FunctionModel("Линейная",
                 new List<double> { 1, 2, 3, 4, 5 },
                 (a, b, c, x, y) => a * x + b * 1 + c)
-                { A = A, B = B, C = C };
+                { C = C };
+
+            FunctionModel.A = A;
+            FunctionModel.B = B;
 
             FunctionTableRow row = new FunctionTableRow();
             row.SetFunction(model);
@@ -42,7 +45,10 @@ namespace UnitTests
             FunctionModel model = new FunctionModel("Квадратичная",
                 new List<double> { 10, 20, 30, 40, 50 },
                 (a, b, c, x, y) => a * Math.Pow(x, 2) + b * Math.Pow(y, 1) + c)
-                { A = A, B = B, C = C };
+                {  C = C };
+
+            FunctionModel.A = A;
+            FunctionModel.B = B;
 
             FunctionTableRow row = new FunctionTableRow();
             row.SetFunction(model);
@@ -64,7 +70,10 @@ namespace UnitTests
             FunctionModel model = new FunctionModel("Кубическая",
                 new List<double> { 100, 200, 300, 400, 500 },
                 (a, b, c, x, y) => a * Math.Pow(x, 3) + b * Math.Pow(y, 2) + c)
-            { A = A, B = B, C = C };
+            { C = C };
+
+            FunctionModel.A = A;
+            FunctionModel.B = B;
 
             FunctionTableRow row = new FunctionTableRow();
             row.SetFunction(model);
@@ -87,7 +96,10 @@ namespace UnitTests
             FunctionModel model = new FunctionModel("4-ой степени",
                 new List<double> { 1000, 2000, 3000, 4000, 5000 },
                 (a, b, c, x, y) => a * Math.Pow(x, 4) + b * Math.Pow(y, 3) + c)
-            { A = A, B = B, C = C };
+            { C = C };
+
+            FunctionModel.A = A;
+            FunctionModel.B = B;
 
             FunctionTableRow row = new FunctionTableRow();
             row.SetFunction(model);
@@ -109,7 +121,10 @@ namespace UnitTests
             FunctionModel model = new FunctionModel("5-ой степени",
                 new List<double> { 10000, 20000, 30000, 40000, 50000 },
                 (a, b, c, x, y) => a * Math.Pow(x, 5) + b * Math.Pow(y, 4) + c)
-            { A = A, B = B, C = C };
+            {C = C };
+
+            FunctionModel.A = A;
+            FunctionModel.B = B;
 
             FunctionTableRow row = new FunctionTableRow();
             row.SetFunction(model);

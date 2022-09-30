@@ -5,12 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:NeoStackTask.ViewModels"
         xmlns:cnvs="clr-namespace:NeoStackTask.Converters"
+        xmlns:validation="clr-namespace:NeoStackTask.Validation"
         xmlns:local="clr-namespace:NeoStackTask"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
+        Title="MainWindow" Height="450" Width="800" ResizeMode="NoResize">
+    
+
+    <Window.Resources>
+        <ControlTemplate x:Key="validationFailed">
+            <StackPanel Orientation="Horizontal">
+                <Border BorderBrush="Red" BorderThickness="2">
+                    <AdornedElementPlaceholder />
+                </Border>
+                <TextBlock Foreground="Red" FontSize="14" FontWeight="Bold">!</TextBlock>
+            </StackPanel>
+        </ControlTemplate>
+    </Window.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="9*"/>
@@ -22,8 +33,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
-            <Grid IsEnabled="{Binding IsNewFunction}">
+
+            <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="6*"/>
                     <ColumnDefinition Width="3*"/>
@@ -31,59 +42,124 @@
 
                 <StackPanel Grid.Column="1">
                     <TextBlock Text="Коэффициент а" Margin="15,13,0,0"/>
-                    <TextBox Margin="10,5" Text="{Binding SelectedFunction.A}" />
+                    <TextBox Margin="10,5" Name="textBoxA" Validation.ErrorTemplate="{StaticResource validationFailed}">
+                        <TextBox.Text>
+                            <Binding Path="SelectedFunction.A" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validation:StringToDoubleValidationRule/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Style.Triggers>
+                                    <Trigger Property="Validation.HasError" Value="True">
+                                        <Setter Property="Foreground" Value="Red"/>
+                                        <Setter Property="ToolTip" 
+                                            Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
 
                     <TextBlock Text="Коэффициент b" Margin="15,13,0,0"/>
-                    <TextBox Margin="10,5" Text="{Binding SelectedFunction.B}" />
+                    <TextBox Margin="10,5" Name="textBoxB" Validation.ErrorTemplate="{StaticResource validationFailed}">
+                        <TextBox.Text>
+                            <Binding Path="SelectedFunction.B" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validation:StringToDoubleValidationRule/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                        <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Style.Triggers>
+                                    <Trigger Property="Validation.HasError" Value="True">
+                                        <Setter Property="Foreground" Value="Red"/>
+                                        <Setter Property="ToolTip" 
+                                            Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
 
                     <TextBlock Text="Коэффициент c" Margin="15,13,0,0"/>
                     <ComboBox Margin="10 5" 
+                              Name="comboBoxC"
                                SelectedIndex="0"
                                ItemsSource="{Binding Path=SelectedFunction.Arguments}"
                                SelectedItem="{Binding Path=SelectedFunction.C}"/>
                 </StackPanel>
 
                 <ListBox Margin="10"
-                     ItemsSource="{Binding Functions}"
-                     SelectedItem="{Binding SelectedFunction}"
-                     DisplayMemberPath="Name"/>
+                         Name="listBox"
+                         ItemsSource="{Binding Functions}"
+                         SelectedItem="{Binding SelectedFunction}"
+                         DisplayMemberPath="Name"
+                         />
             </Grid>
-            <Button Grid.Row="1"
-                    Padding="25 5"
-                    Margin="10 0"
-                    HorizontalAlignment="Left">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Content" Value="Задать функцию"/>
-                        <Setter Property="Command" Value="{Binding InputXyCommand}"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsNewFunction}" Value="False">
-                                <Setter Property="Content" Value="Изменить функцию"/>
-                                <Setter Property="Command" Value="{Binding InputFunctionCommand}"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
         </Grid>
 
         <StackPanel Grid.Column="3">
             <TextBlock>
                 <Run Text="Выбрана функция:"/>
-                <Run Text="{Binding SelectedFunctionName, Mode=OneWay}"/>
+                <Run Text="{Binding SelectedFunction.Name, Mode=OneWay}"/>
             </TextBlock>
-            <DataGrid x:Name="DataGridResFunction"  
-                      IsEnabled="{Binding IsNewFunction, Converter={cnvs:BooleanNotConverter}}"
+            <DataGrid x:Name="DataGridResFunction"
                       Margin="10" 
-                      AutoGenerateColumns="False" 
+                      AutoGenerateColumns="False"
                       ItemsSource="{Binding Path=CalculatedFunctions}"
                       CanUserAddRows="True"
-                      MinHeight="100">
+                      MinHeight="350"
+                      MaxHeight="350"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                      >
+                      
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="F(X, Y)" Width="60" Binding="{Binding F, Mode=OneWay}" IsReadOnly="True"/>
-                    <DataGridTextColumn Header="X" Width="60" Binding="{Binding Path=X, UpdateSourceTrigger=PropertyChanged}" />
-                    <DataGridTextColumn Header="Y" Width="*" Binding="{Binding Path=Y, UpdateSourceTrigger=PropertyChanged}"/>
+                    <DataGridTextColumn Header="F(X, Y)" Width="60" Binding="{Binding Path=F, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    
+                    <DataGridTextColumn Header="X" Width="60" >
+                        <DataGridTextColumn.Binding>
+                            <Binding Path="X" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validation:StringToDoubleValidationRule/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </DataGridTextColumn.Binding>
+                    </DataGridTextColumn>
+
+                    <DataGridTextColumn Header="Y" Width="*" >
+                        <DataGridTextColumn.Binding>
+                            <Binding Path="Y" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validation:StringToDoubleValidationRule/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </DataGridTextColumn.Binding>
+                    </DataGridTextColumn>
                 </DataGrid.Columns>
+                <DataGrid.Style>
+                    <Style TargetType="DataGrid">
+                        <Setter Property="IsEnabled" Value="True"/>
+                        <Style.Triggers>
+                            <!--<MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=(Validation.HasError),ElementName=textBoxA}"  Value="False"/>
+                                    <Condition Binding="{Binding Path=(Validation.HasError),ElementName=textBoxB}"  Value="False"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="IsEnabled" Value="True"/>
+                            </MultiDataTrigger>-->
+                            <DataTrigger Binding="{Binding Path=(Validation.HasError),ElementName=textBoxA}"  Value="True">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=(Validation.HasError),ElementName=textBoxB}"  Value="True">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Style>
             </DataGrid>
         </StackPanel>
     </Grid>
